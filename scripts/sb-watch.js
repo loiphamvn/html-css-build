@@ -5,6 +5,7 @@ const chokidar = require('chokidar');
 const upath = require('upath');
 const renderAssets = require('./render-assets');
 const renderPug = require('./render-pug');
+const renderHtml = require('./render-html');
 const renderScripts = require('./render-scripts');
 const renderSCSS = require('./render-scss');
 
@@ -17,6 +18,7 @@ let READY = false;
 process.title = 'pug-watch';
 process.stdout.write('Loading');
 let allPugFiles = {};
+let allHtmlFiles = {};
 
 watcher.on('add', filePath => _processFile(upath.normalize(filePath), 'add'));
 watcher.on('change', filePath => _processFile(upath.normalize(filePath), 'change'));
@@ -28,21 +30,40 @@ watcher.on('ready', () => {
 _handleSCSS();
 
 function _processFile(filePath, watchEvent) {
-    
+
     if (!READY) {
         if (filePath.match(/\.pug$/)) {
-            if (!filePath.match(/includes/) && !filePath.match(/mixins/) && !filePath.match(/\/pug\/layouts\//)) {
+            if (!filePath.match(/includes/) &&
+                !filePath.match(/mixins/) &&
+                !filePath.match(/\/pug\/layouts\//)) {
                 allPugFiles[filePath] = true;
-            }    
-        }    
+            }
+        }
+
+        if (filePath.match(/\.htm$/) ||
+            filePath.match(/\.html$/)
+        ) {
+            if (!filePath.match(/includes/) &&
+                !filePath.match(/mixins/) &&
+                !filePath.match(/\/pug\/layouts\//)) {
+                allHtmlFiles[filePath] = true;
+            }
+        }
         process.stdout.write('.');
         return;
     }
 
     console.log(`### INFO: File event: ${watchEvent}: ${filePath}`);
 
-    if (filePath.match(/\.pug$/)) {
+    if (filePath.match(/\.pug$/) 
+    ) {
         return _handlePug(filePath, watchEvent);
+    }
+
+    if (filePath.match(/\.htm$/) ||                
+        filePath.match(/\.html$/)
+    ) {
+        return _handleHtml(filePath, watchEvent);
     }
 
     if (filePath.match(/\.scss$/)) {
@@ -61,6 +82,26 @@ function _processFile(filePath, watchEvent) {
     }
 
 }
+
+function _handleHtml(filePath, watchEvent) {
+    if (watchEvent === 'change') {
+        if (filePath.match(/includes/) || filePath.match(/mixins/) || filePath.match(/\/pug\/layouts\//)) {
+            return _renderAllHtml();
+        }
+        return renderHtml(filePath);
+    }
+    if (!filePath.match(/includes/) && !filePath.match(/mixins/) && !filePath.match(/\/pug\/layouts\//)) {
+        return renderHtml(filePath);
+    }
+}
+
+function _renderAllHtml() {
+    console.log('### INFO: Rendering All');
+    _.each(allHtmlFiles, (value, filePath) => {
+        renderHtml(filePath);
+    });
+}
+
 
 function _handlePug(filePath, watchEvent) {
     if (watchEvent === 'change') {

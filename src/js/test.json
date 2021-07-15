@@ -1,0 +1,18 @@
+{
+    "data": {
+        "user": {
+            "id": "d1666dea-a09e-494e-a940-f09dfd11e7c9",
+            "fullName": "Anh loi",
+            "countrycode": null,
+            "phonenumber": "84908127786",
+            "email": "loi.pham@beesightsoft.com",
+            "username": null,
+            "createdat": "2021-07-15t09:45:11.517z",
+            "updatedat": "2021-07-15t09:45:11.517z"
+        },
+        "jwt": {
+            "accesstoken": "eyjhbgcioijiuzi1niisinr5cci6ikpxvcj9.eyj1c2VybmFtZSI6bnVsbCwiaWQiOiJkMTY2NmRlYS1hMDllLTQ5NGUtYTk0MC1mMDlkZmQxMWU3YzkiLCJyb2xlIjoiUk9MRV9VU0VSIiwiaWF0IjoxNjI2MzQyMzExfQ.5p8tFpttktNkv211oKoTvPgFL7k7il9whytRJMPU1aI"
+        }
+    },
+    "errors": null
+}
